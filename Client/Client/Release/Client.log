@@ -1,0 +1,8 @@
+﻿  SendGetMethod.cpp
+C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\include\ShlObj.h(1151): warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+SendGetMethod.cpp(73): warning C4018: '<': signed/unsigned mismatch
+  Generating code
+  All 850 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Client.vcxproj -> D:\projects\test\network\Client\Release\Client.exe
+  Client.vcxproj -> D:\projects\test\network\Client\Release\Client.pdb (Full PDB)

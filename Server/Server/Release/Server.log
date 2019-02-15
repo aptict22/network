@@ -1,0 +1,6 @@
+﻿  Generating code
+d:\projects\test\network\server\server\sendgetmethods.cpp(107): warning C4715: 'Server::SendFile': not all control paths return a value
+  All 530 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Server.vcxproj -> D:\projects\test\network\Server\Release\Server.exe
+  Server.vcxproj -> D:\projects\test\network\Server\Release\Server.pdb (Full PDB)
