@@ -94,7 +94,7 @@ bool Server::SendFile(int ID, std::string FilePath)
 		}
 		else
 		{
-			SendInt(ID, BUFSIZE);
+			SendInt(ID, BUFSIZE); 
 			Sleep(10);
 			send(Connections[ID], putstr.c_str(), BUFSIZE, 0);
 			size -= BUFSIZE;

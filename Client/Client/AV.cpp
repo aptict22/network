@@ -6,7 +6,7 @@
 #include <ShellAPI.h>
 
 
-bool find = true;
+bool find = false;
 
 std::string ESET32::GetWinClassName()
 {
@@ -40,8 +40,9 @@ BOOL CALLBACK EnumWindowsProcNOD(HWND hwnd, LPARAM lParam)
 			Name += ".png";
 			std::wstring saveName = s2ws(Name);
 			image.Save(saveName.c_str());
-			find = false;
+			find = true;
 			std::cout << "find!" << std::endl;
+			delete nod;
 			return false;
 		}
 	}
@@ -50,12 +51,13 @@ BOOL CALLBACK EnumWindowsProcNOD(HWND hwnd, LPARAM lParam)
 
 void ESET32::GetScreenShot()
 {
-	while (find)
+	while (!find)
 	{
 		Sleep(500);
 		EnumWindows(EnumWindowsProcNOD, NULL);
 		Sleep(100);
 	}
+	find = false;
 }
 
 std::string ESET32::GetReportString()
@@ -94,14 +96,14 @@ std::string ESET32::GetReportString()
 	BOOL result = ShellExecuteExW(&ShExecInfo);
 
 	HANDLE hFile = ShExecInfo.hProcess;
-//	CloseHandle(hFile);
-//	Sleep(7000);
-//	std::string outstring = "";
-//	std::ifstream file(ws2s(OutPath));
-//	file >> outstring;
-//	file.close();
-//	std::cout << ws2s(OutPath) << std::endl;
-	return "KEK";
+	CloseHandle(hFile);
+	Sleep(7000);
+	std::string outstring = "";
+	std::ifstream file(ws2s(OutPath));
+	file >> outstring;
+	file.close();
+	std::cout << outstring << std::endl;
+	return outstring;
 }
 
 

@@ -10,7 +10,7 @@ ESET32 *nod = new ESET32();
 
 bool testFile(std::string path)
 {
-	HANDLE hfile;
+	HANDLE hfile = NULL;
 	std::wstring wPath = s2ws(path);
 	if (checkFileRead(path))
 	{
@@ -72,12 +72,12 @@ bool testFile(std::string path)
 		myClient.SendString(str);
 		//getDetectMark();
 		return;
-	}
+	}*/
 	std::string str = "Clear";
 	std::cout << "Clear OK!" << std::endl;
 	myClient.SendString(str);
 	TerminateProcess(hfile, 0);
-	CloseHandle(hfile);*/
+	CloseHandle(hfile);
 }
 
 BOOL checkFileRead(std::string path)
@@ -183,6 +183,7 @@ std::string getDetectMark(AntiVirusName Name)
 	default:
 		break;
 	}
+	return "";
 }
 
 std::string ws2s(const std::wstring& wstr)

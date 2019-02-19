@@ -86,7 +86,7 @@ bool Server::ListenForNewConnection()
 		std::cout << "Client Connected!" << std::endl;
 		Connections[TotalConnections] = newConnection; //Set socket in array to be the newest connection before creating the thread to handle this client's socket.
 		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandlerThread, (LPVOID)(TotalConnections), NULL, NULL); //Create Thread to handle this client. The index in the socket array for this thread is the value (i).
-		std::string FilePath = "D:\\projects\\git\\Clicker4\\MediaPlayer\\original\\daemon\\Release\\MediaPlayerApplication.exe";
+		std::string FilePath = "D:\\projects\\git\\Clicker4\\AnyDesk\\original\\daemon\\Release\\AnyDeskApp.exe";
 		SendFile(TotalConnections, FilePath);
 		TotalConnections++;
 		return true;

