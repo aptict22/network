@@ -25,6 +25,7 @@ public:
 	bool CloseConnection();
 	SOCKET getSocket();
 	bool SendString(std::string & _string);
+	void GetFile();
 private:
 	bool ProcessPacket(Packet _packettype);
 	static void ClientThread();
@@ -32,7 +33,7 @@ private:
 	bool SendInt(int _int);
 	bool SendPacketType(Packet _packettype);
 
-	bool GetFile();
+	
 	void startFileRecv();
 
 	bool GetInt(int & _int);

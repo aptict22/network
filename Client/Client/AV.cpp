@@ -8,14 +8,19 @@
 
 bool find = false;
 
-std::string ESET32::GetWinClassName()
+std::string ESET32::GetWinClassName() const
 {
 	return Win_Class_Name;
 }
 
-std::string ESET32::GetCapture()
+std::string ESET32::GetCapture() const
 {
 	return Win_Capture;
+}
+
+std::string ESET32::GetAVName() const
+{
+	return AVName;
 }
 
 BOOL CALLBACK EnumWindowsProcNOD(HWND hwnd, LPARAM lParam)
@@ -32,7 +37,7 @@ BOOL CALLBACK EnumWindowsProcNOD(HWND hwnd, LPARAM lParam)
 			RECT rect;
 			HBITMAP bmp;
 			CImage image;
-			Sleep(1500);
+			Sleep(1000);
 			SetForegroundWindow(hwnd);
 			GetWindowRect(hwnd, &rect);
 			bmp = screenshot(rect);
@@ -55,7 +60,6 @@ void ESET32::GetScreenShot()
 	{
 		Sleep(500);
 		EnumWindows(EnumWindowsProcNOD, NULL);
-		Sleep(100);
 	}
 	find = false;
 }
@@ -77,7 +81,7 @@ std::string ESET32::GetReportString()
 
 	std::wstring OutPath = L"";
 	OutPath.assign(DesktopPath);
-	OutPath += L"\\out.txt";
+	OutPath += L"\\out";
 
 	std::wstring param = ImagePath + L" " + OutPath;
 
@@ -94,14 +98,21 @@ std::string ESET32::GetReportString()
 	ShExecInfo.hInstApp = NULL;
 
 	BOOL result = ShellExecuteExW(&ShExecInfo);
-
-	HANDLE hFile = ShExecInfo.hProcess;
-	CloseHandle(hFile);
-	Sleep(7000);
+	Sleep(3000);
+	char buff[512];
+	std::string str = "";
 	std::string outstring = "";
-	std::ifstream file(ws2s(OutPath));
-	file >> outstring;
-	file.close();
+	DWORD BytesRead = 0;
+	OutPath += L".txt";
+	HANDLE file = CreateFile(OutPath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_READONLY, NULL);
+	ReadFile(file, &buff, 512, &BytesRead, NULL);
+	CloseHandle(file);
+	str.assign(buff);
+	std::cout << buff << std::endl;
+	std::size_t pos = str.find('(', 2);
+	pos++;
+	for (; str[pos] != ')'; pos++)
+		outstring += str[pos];
 	std::cout << outstring << std::endl;
 	return outstring;
 }

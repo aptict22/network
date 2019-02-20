@@ -1,8 +1,10 @@
 #include "Client.h"
-
+#include <thread> 
 
 //extern File file;
 extern Client myClient;
+
+void callfunc();
 
 Client::Client(std::string IP, int Port)
 {
@@ -57,7 +59,9 @@ bool Client::ProcessPacket(Packet _packettype)
 	}
 	case P_File:
 	{
-		GetFile();
+		std::thread file(callfunc);
+		file.join();
+		std::cout << "OK" << std::endl;
 		break;
 	}
 	case P_Test:
@@ -70,6 +74,10 @@ bool Client::ProcessPacket(Packet _packettype)
 		break;
 	}
 	return true;
+}
+void callfunc()
+{
+	myClient.GetFile();
 }
 
 bool Client::CloseConnection()

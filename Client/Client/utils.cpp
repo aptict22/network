@@ -10,20 +10,23 @@ ESET32 *nod = new ESET32();
 
 bool testFile(std::string path)
 {
-	HANDLE hfile = NULL;
+	//HANDLE hfile = NULL;
+	std::cout << "start test" << std::endl;
+	Sleep(2000);
 	std::wstring wPath = s2ws(path);
 	if (checkFileRead(path))
 	{
-		std::string str = "OK";
+		std::string str = nod->GetAVName() + ": ";
+		std::cout << "GetScreen" << std::endl;
 		nod->GetScreenShot();
 		std::cout << "scrennOk" << std::endl;
-		str = nod->GetReportString();
+		str += nod->GetReportString();
 		std::cout << "Report Ok!" << std::endl;
 		myClient.SendString(str);
 		return true;
 	}
 	//Run file
-	
+/*	
 	SHELLEXECUTEINFO ShExecInfo = { 0 };
 
 	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -48,8 +51,8 @@ bool testFile(std::string path)
 		myClient.SendString(str);
 		return true;
 	}
-/*	Sleep(2000);
-	hfile = ShExecInfo.hProcess;
+	Sleep(2000);
+	HANDLE hfile = ShExecInfo.hProcess;
 	DWORD lpExitCode = 0;
 	BOOL exitCode = GetExitCodeProcess(hfile, &lpExitCode);
 	std::cout << "Second target OK!"<< std::endl << "Third target run!" << std::endl;
@@ -60,7 +63,7 @@ bool testFile(std::string path)
 		TerminateProcess(hfile, 0);
 		CloseHandle(hfile);
 		std::cout << "OK!" << std::endl;
-		return;
+		return true;
 	}
 	else
 	{
@@ -71,29 +74,31 @@ bool testFile(std::string path)
 		std::cout << "Report Ok!" << std::endl;
 		myClient.SendString(str);
 		//getDetectMark();
-		return;
-	}*/
+		return true;
+	}
 	std::string str = "Clear";
 	std::cout << "Clear OK!" << std::endl;
 	myClient.SendString(str);
 	TerminateProcess(hfile, 0);
-	CloseHandle(hfile);
+	CloseHandle(hfile);*/
+	return false;
 }
 
 BOOL checkFileRead(std::string path)
 {
-	HANDLE hFile;
 	DWORD FileSize = 0;
 	std::cout << "CheckFileread" << std::endl;
-	hFile = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
+		std::cout << "detect" << std::endl;
 		CloseHandle(hFile);
 		return true;
 	}
-	GetFileSize(hFile, &FileSize);
-	if (FileSize == 0)
+	FileSize = GetFileSize(hFile, NULL);
+	if (FileSize == INVALID_FILE_SIZE || FileSize == 0)
 	{
+		std::cout << "detect" << std::endl;
 		CloseHandle(hFile);
 		return true;
 	}
