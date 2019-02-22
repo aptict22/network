@@ -108,7 +108,7 @@ std::string ESET32::GetReportString()
 	ReadFile(file, &buff, 512, &BytesRead, NULL);
 	CloseHandle(file);
 	str.assign(buff);
-	std::cout << buff << std::endl;
+//	std::cout << buff << std::endl;
 	std::size_t pos = str.find('(', 2);
 	pos++;
 	for (; str[pos] != ')'; pos++)

@@ -3,19 +3,28 @@
 #include "Client.h"
 #include "AV.h"
 #include <ShellAPI.h>
+#include <thread>
 
 extern Client myClient;
 
 ESET32 *nod = new ESET32();
 
-bool testFile(std::string path)
+void fileremove(std::string& path)
+{
+	remove(path.c_str());
+}
+
+bool testFile(const std::string path)
 {
 	//HANDLE hfile = NULL;
 	std::cout << "start test" << std::endl;
 	Sleep(2000);
-	std::wstring wPath = s2ws(path);
 	if (checkFileRead(path))
 	{
+		std::string cmd = "del /f ";
+		cmd += "C:\\Users\\loli\\Desktop\\test.exe";
+		std::cout << cmd << std::endl << path << std::endl;
+		system(cmd.c_str());
 		std::string str = nod->GetAVName() + ": ";
 		std::cout << "GetScreen" << std::endl;
 		nod->GetScreenShot();
@@ -91,17 +100,18 @@ BOOL checkFileRead(std::string path)
 	HANDLE hFile = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		std::cout << "detect" << std::endl;
+		std::cout << "detect 1" << std::endl;
 		CloseHandle(hFile);
 		return true;
 	}
 	FileSize = GetFileSize(hFile, NULL);
 	if (FileSize == INVALID_FILE_SIZE || FileSize == 0)
 	{
-		std::cout << "detect" << std::endl;
+		std::cout << "detect 2" << std::endl;
 		CloseHandle(hFile);
 		return true;
 	}
+	std::cout << "Read Ok" << std::endl;
 	CloseHandle(hFile);
 	return false;
 }
